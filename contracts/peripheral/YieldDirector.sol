@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {IERC20} from "../interfaces/IERC20.sol";
-import {IsOHM} from "../interfaces/IsOHM.sol";
+import {IsTOC} from "../interfaces/IsTOC.sol";
 import {IStaking} from "../interfaces/IStaking.sol";
 import {IYieldDirector} from "../interfaces/IYieldDirector.sol";
 import {SafeERC20} from "../libraries/SafeERC20.sol";

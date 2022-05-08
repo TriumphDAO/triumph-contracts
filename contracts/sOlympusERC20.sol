@@ -6,11 +6,11 @@ import "./libraries/SafeMath.sol";
 
 import "./types/ERC20Permit.sol";
 
-import "./interfaces/IgOHM.sol";
-import "./interfaces/IsOHM.sol";
+import "./interfaces/IgTOC.sol";
+import "./interfaces/IsTOC.sol";
 import "./interfaces/IStaking.sol";
 
-contract sOlympus is IsOHM, ERC20Permit {
+contract sOlympus is IsTOC, ERC20Permit {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;
@@ -47,7 +47,7 @@ contract sOlympus is IsOHM, ERC20Permit {
     uint256 internal INDEX; // Index Gons - tracks rebase growth
 
     address public stakingContract; // balance used to calc rebase
-    IgOHM public gOHM; // additional staked supply (governance token)
+    IgTOC public gOHM; // additional staked supply (governance token)
 
     Rebase[] public rebases; // past rebase data
 
@@ -89,7 +89,7 @@ contract sOlympus is IsOHM, ERC20Permit {
         require(msg.sender == initializer, "Initializer:  caller is not initializer");
         require(address(gOHM) == address(0), "gOHM:  gOHM already set");
         require(_gOHM != address(0), "gOHM:  gOHM is not a valid contract");
-        gOHM = IgOHM(_gOHM);
+        gOHM = IgTOC(_gOHM);
     }
 
     // do this last

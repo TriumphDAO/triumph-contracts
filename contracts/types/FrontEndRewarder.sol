@@ -12,10 +12,10 @@ abstract contract FrontEndRewarder is TOCAccessControlled {
     mapping(address => uint256) public rewards; // front end operator rewards
     mapping(address => bool) public whitelisted; // whitelisted status for operators
 
-    IERC20 internal immutable ohm; // reward token
+    IERC20 internal immutable toc; // reward token
 
-    constructor(ITOCAuthority _authority, IERC20 _ohm) TOCAccessControlled(_authority) {
-        ohm = _ohm;
+    constructor(ITOCAuthority _authority, IERC20 _toc) TOCAccessControlled(_authority) {
+        toc = _toc;
     }
 
     /* ========= EXTERNAL FUNCTIONS ========== */
@@ -25,7 +25,7 @@ abstract contract FrontEndRewarder is TOCAccessControlled {
         uint256 reward = rewards[msg.sender];
 
         rewards[msg.sender] = 0;
-        ohm.transfer(msg.sender, reward);
+        toc.transfer(msg.sender, reward);
     }
 
     /* ========= INTERNAL ========== */

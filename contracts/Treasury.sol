@@ -8,7 +8,7 @@ import "./interfaces/IOwnable.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IERC20Metadata.sol";
 import "./interfaces/IOHM.sol";
-import "./interfaces/IsOHM.sol";
+import "./interfaces/IsTOC.sol";
 import "./interfaces/IBondingCalculator.sol";
 import "./interfaces/ITreasury.sol";
 
@@ -60,7 +60,7 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
     /* ========== STATE VARIABLES ========== */
 
     IOHM public immutable OHM;
-    IsOHM public sOHM;
+    IsTOC public sOHM;
 
     mapping(STATUS => address[]) public registry;
     mapping(STATUS => mapping(address => bool)) public permissions;
@@ -306,7 +306,7 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
     ) external onlyGovernor {
         require(timelockEnabled == false, "Use queueTimelock");
         if (_status == STATUS.SOHM) {
-            sOHM = IsOHM(_address);
+            sOHM = IsTOC(_address);
         } else {
             permissions[_status][_address] = true;
 
@@ -404,7 +404,7 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
 
         if (info.managing == STATUS.SOHM) {
             // 9
-            sOHM = IsOHM(info.toPermit);
+            sOHM = IsTOC(info.toPermit);
         } else {
             permissions[info.managing][info.toPermit] = true;
 

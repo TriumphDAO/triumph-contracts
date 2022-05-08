@@ -5,8 +5,8 @@ import "./libraries/SafeMath.sol";
 import "./libraries/SafeERC20.sol";
 
 import "./interfaces/IERC20.sol";
-import "./interfaces/IsOHM.sol";
-import "./interfaces/IgOHM.sol";
+import "./interfaces/IsTOC.sol";
+import "./interfaces/IgTOC.sol";
 import "./interfaces/IDistributor.sol";
 
 import "./types/TOCAccessControlled.sol";
@@ -16,8 +16,8 @@ contract TOCStaking is TOCAccessControlled {
 
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-    using SafeERC20 for IsOHM;
-    using SafeERC20 for IgOHM;
+    using SafeERC20 for IsTOC;
+    using SafeERC20 for IgTOC;
 
     /* ========== EVENTS ========== */
 
@@ -42,9 +42,9 @@ contract TOCStaking is TOCAccessControlled {
 
     /* ========== STATE VARIABLES ========== */
 
-    IERC20 public immutable OHM;
-    IsOHM public immutable sOHM;
-    IgOHM public immutable gOHM;
+    IERC20 public immutable TOC;
+    IsTOC public immutable sTOC;
+    IgTOC public immutable gTOC;
 
     Epoch public epoch;
 
@@ -57,20 +57,20 @@ contract TOCStaking is TOCAccessControlled {
     /* ========== CONSTRUCTOR ========== */
 
     constructor(
-        address _ohm,
-        address _sOHM,
-        address _gOHM,
+        address _toc,
+        address _sTOC,
+        address _gTOC,
         uint256 _epochLength,
         uint256 _firstEpochNumber,
         uint256 _firstEpochTime,
         address _authority
     ) TOCAccessControlled(ITOCAuthority(_authority)) {
-        require(_ohm != address(0), "Zero address: OHM");
-        OHM = IERC20(_ohm);
-        require(_sOHM != address(0), "Zero address: sOHM");
-        sOHM = IsOHM(_sOHM);
-        require(_gOHM != address(0), "Zero address: gOHM");
-        gOHM = IgOHM(_gOHM);
+        require(_toc != address(0), "Zero address: TOC");
+        TOC = IERC20(_toc);
+        require(_sTOC != address(0), "Zero address: sTOC");
+        sTOC = IsTOC(_sTOC);
+        require(_gTOC != address(0), "Zero address: gTOC");
+        gTOC = IgTOC(_gTOC);
 
         epoch = Epoch({length: _epochLength, number: _firstEpochNumber, end: _firstEpochTime, distribute: 0});
     }
@@ -78,7 +78,7 @@ contract TOCStaking is TOCAccessControlled {
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /**
-     * @notice stake OHM to enter warmup
+     * @notice stake TOC to enter warmup
      * @param _to address
      * @param _amount uint
      * @param _claim bool
@@ -91,7 +91,7 @@ contract TOCStaking is TOCAccessControlled {
         bool _rebasing,
         bool _claim
     ) external returns (uint256) {
-        OHM.safeTransferFrom(msg.sender, address(this), _amount);
+        TOC.safeTransferFrom(msg.sender, address(this), _amount);
         _amount = _amount.add(rebase()); // add bounty if rebase occurred
         if (_claim && warmupPeriod == 0) {
             return _send(_to, _amount, _rebasing);
@@ -103,12 +103,12 @@ contract TOCStaking is TOCAccessControlled {
 
             warmupInfo[_to] = Claim({
                 deposit: info.deposit.add(_amount),
-                gons: info.gons.add(sOHM.gonsForBalance(_amount)),
+                gons: info.gons.add(sTOC.gonsForBalance(_amount)),
                 expiry: epoch.number.add(warmupPeriod),
                 lock: info.lock
             });
 
-            gonsInWarmup = gonsInWarmup.add(sOHM.gonsForBalance(_amount));
+            gonsInWarmup = gonsInWarmup.add(sTOC.gonsForBalance(_amount));
 
             return _amount;
         }
@@ -132,13 +132,13 @@ contract TOCStaking is TOCAccessControlled {
 
             gonsInWarmup = gonsInWarmup.sub(info.gons);
 
-            return _send(_to, sOHM.balanceForGons(info.gons), _rebasing);
+            return _send(_to, sTOC.balanceForGons(info.gons), _rebasing);
         }
         return 0;
     }
 
     /**
-     * @notice forfeit stake and retrieve OHM
+     * @notice forfeit stake and retrieve TOC
      * @return uint
      */
     function forfeit() external returns (uint256) {
@@ -147,7 +147,7 @@ contract TOCStaking is TOCAccessControlled {
 
         gonsInWarmup = gonsInWarmup.sub(info.gons);
 
-        OHM.safeTransfer(msg.sender, info.deposit);
+        TOC.safeTransfer(msg.sender, info.deposit);
 
         return info.deposit;
     }
@@ -160,7 +160,7 @@ contract TOCStaking is TOCAccessControlled {
     }
 
     /**
-     * @notice redeem sOHM for OHMs
+     * @notice redeem sTOC for TOCs
      * @param _to address
      * @param _amount uint
      * @param _trigger bool
@@ -179,39 +179,39 @@ contract TOCStaking is TOCAccessControlled {
             bounty = rebase();
         }
         if (_rebasing) {
-            sOHM.safeTransferFrom(msg.sender, address(this), _amount);
+            sTOC.safeTransferFrom(msg.sender, address(this), _amount);
             amount_ = amount_.add(bounty);
         } else {
-            gOHM.burn(msg.sender, _amount); // amount was given in gOHM terms
-            amount_ = gOHM.balanceFrom(amount_).add(bounty); // convert amount to OHM terms & add bounty
+            gTOC.burn(msg.sender, _amount); // amount was given in gTOC terms
+            amount_ = gTOC.balanceFrom(amount_).add(bounty); // convert amount to TOC terms & add bounty
         }
 
-        require(amount_ <= OHM.balanceOf(address(this)), "Insufficient OHM balance in contract");
-        OHM.safeTransfer(_to, amount_);
+        require(amount_ <= TOC.balanceOf(address(this)), "Insufficient TOC balance in contract");
+        TOC.safeTransfer(_to, amount_);
     }
 
     /**
-     * @notice convert _amount sOHM into gBalance_ gOHM
+     * @notice convert _amount sTOC into gBalance_ gTOC
      * @param _to address
      * @param _amount uint
      * @return gBalance_ uint
      */
     function wrap(address _to, uint256 _amount) external returns (uint256 gBalance_) {
-        sOHM.safeTransferFrom(msg.sender, address(this), _amount);
-        gBalance_ = gOHM.balanceTo(_amount);
-        gOHM.mint(_to, gBalance_);
+        sTOC.safeTransferFrom(msg.sender, address(this), _amount);
+        gBalance_ = gTOC.balanceTo(_amount);
+        gTOC.mint(_to, gBalance_);
     }
 
     /**
-     * @notice convert _amount gOHM into sBalance_ sOHM
+     * @notice convert _amount gTOC into sBalance_ sTOC
      * @param _to address
      * @param _amount uint
      * @return sBalance_ uint
      */
     function unwrap(address _to, uint256 _amount) external returns (uint256 sBalance_) {
-        gOHM.burn(msg.sender, _amount);
-        sBalance_ = gOHM.balanceFrom(_amount);
-        sOHM.safeTransfer(_to, sBalance_);
+        gTOC.burn(msg.sender, _amount);
+        sBalance_ = gTOC.balanceFrom(_amount);
+        sTOC.safeTransfer(_to, sBalance_);
     }
 
     /**
@@ -221,17 +221,17 @@ contract TOCStaking is TOCAccessControlled {
     function rebase() public returns (uint256) {
         uint256 bounty;
         if (epoch.end <= block.timestamp) {
-            sOHM.rebase(epoch.distribute, epoch.number);
+            sTOC.rebase(epoch.distribute, epoch.number);
 
             epoch.end = epoch.end.add(epoch.length);
             epoch.number++;
 
             if (address(distributor) != address(0)) {
                 distributor.distribute();
-                bounty = distributor.retrieveBounty(); // Will mint ohm for this contract if there exists a bounty
+                bounty = distributor.retrieveBounty(); // Will mint toc for this contract if there exists a bounty
             }
-            uint256 balance = OHM.balanceOf(address(this));
-            uint256 staked = sOHM.circulatingSupply();
+            uint256 balance = TOC.balanceOf(address(this));
+            uint256 staked = sTOC.circulatingSupply();
             if (balance <= staked.add(bounty)) {
                 epoch.distribute = 0;
             } else {
@@ -244,7 +244,7 @@ contract TOCStaking is TOCAccessControlled {
     /* ========== INTERNAL FUNCTIONS ========== */
 
     /**
-     * @notice send staker their amount as sOHM or gOHM
+     * @notice send staker their amount as sTOC or gTOC
      * @param _to address
      * @param _amount uint
      * @param _rebasing bool
@@ -255,29 +255,29 @@ contract TOCStaking is TOCAccessControlled {
         bool _rebasing
     ) internal returns (uint256) {
         if (_rebasing) {
-            sOHM.safeTransfer(_to, _amount); // send as sOHM (equal unit as OHM)
+            sTOC.safeTransfer(_to, _amount); // send as sTOC (equal unit as TOC)
             return _amount;
         } else {
-            gOHM.mint(_to, gOHM.balanceTo(_amount)); // send as gOHM (convert units from OHM)
-            return gOHM.balanceTo(_amount);
+            gTOC.mint(_to, gTOC.balanceTo(_amount)); // send as gTOC (convert units from TOC)
+            return gTOC.balanceTo(_amount);
         }
     }
 
     /* ========== VIEW FUNCTIONS ========== */
 
     /**
-     * @notice returns the sOHM index, which tracks rebase growth
+     * @notice returns the sTOC index, which tracks rebase growth
      * @return uint
      */
     function index() public view returns (uint256) {
-        return sOHM.index();
+        return sTOC.index();
     }
 
     /**
      * @notice total supply in warmup
      */
     function supplyInWarmup() public view returns (uint256) {
-        return sOHM.balanceForGons(gonsInWarmup);
+        return sTOC.balanceForGons(gonsInWarmup);
     }
 
     /**

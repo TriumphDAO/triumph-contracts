@@ -5,7 +5,7 @@ pragma abicoder v2;
 import "../libraries/SafeMath.sol";
 import "../libraries/SafeERC20.sol";
 import "../interfaces/ITreasury.sol";
-import "../interfaces/IgOHM.sol";
+import "../interfaces/IgTOC.sol";
 import "../interfaces/IStaking.sol";
 import "../types/Ownable.sol";
 
@@ -54,7 +54,7 @@ contract GenesisClaim is Ownable {
     // holds non-circulating supply
     address internal immutable dao = 0x245cc372C84B3645Bf0Ffe6538620B04a217988B;
     // tracks rebase-agnostic balance
-    IgOHM internal immutable gOHM = IgOHM(0x0ab87046fBb341D058F17CBC4c1133F25a20a52f);
+    IgTOC internal immutable gOHM = IgTOC(0x0ab87046fBb341D058F17CBC4c1133F25a20a52f);
     // previous deployment of contract (to migrate terms)
     IClaim internal immutable previous = IClaim(0x5b2303Cc2fdE10fc8dE92d6728D0391b5dbaD9e4);
 

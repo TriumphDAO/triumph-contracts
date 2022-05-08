@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {IERC20} from "../interfaces/IERC20.sol";
-import {IgOHM} from "../interfaces/IgOHM.sol";
+import {IgTOC} from "../interfaces/IgTOC.sol";
 import {SafeERC20} from "../libraries/SafeERC20.sol";
 import {IYieldStreamer} from "../interfaces/IYieldStreamer.sol";
 import {TOCAccessControlled, ITOCAuthority} from "../types/TOCAccessControlled.sol";
@@ -160,7 +160,7 @@ contract YieldStreamer is IYieldStreamer, YieldSplitter, TOCAccessControlled {
     function withdrawPrincipal(uint256 id_, uint256 amount_) external override {
         if (withdrawDisabled) revert YieldStreamer_WithdrawDisabled();
 
-        if (amount_ >= IgOHM(gOHM).balanceTo(depositInfo[id_].principalAmount)) {
+        if (amount_ >= IgTOC(gOHM).balanceTo(depositInfo[id_].principalAmount)) {
             address recipient = recipientInfo[id_].recipientAddress;
             uint256 unclaimedStreamTokens = recipientInfo[id_].unclaimedStreamTokens;
             (uint256 principal, uint256 totalGOHM) = _closeDeposit(id_, msg.sender);
@@ -396,7 +396,7 @@ contract YieldStreamer is IYieldStreamer, YieldSplitter, TOCAccessControlled {
         @param id_ Id of the deposit.
      */
     function getPrincipalInGOHM(uint256 id_) external view returns (uint256) {
-        return IgOHM(gOHM).balanceTo(depositInfo[id_].principalAmount);
+        return IgTOC(gOHM).balanceTo(depositInfo[id_].principalAmount);
     }
 
     /**

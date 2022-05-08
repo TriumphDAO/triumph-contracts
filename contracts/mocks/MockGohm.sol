@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-//import {IgOHM} from "../interfaces/IgOHM.sol";
+//import {IgTOC} from "../interfaces/IgTOC.sol";
 import {MockERC20} from "./MockERC20.sol";
 
-// TODO fulfills IgOHM but is not inheriting because of dependency issues
+// TODO fulfills IgTOC but is not inheriting because of dependency issues
 contract MockGOhm is MockERC20 {
     /* ========== CONSTRUCTOR ========== */
 

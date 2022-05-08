@@ -18,7 +18,7 @@ contract Distributor is IDistributor, TOCAccessControlled {
 
     /* ====== VARIABLES ====== */
 
-    IERC20 private immutable ohm;
+    IERC20 private immutable toc;
     ITreasury private immutable treasury;
     address private immutable staking;
 
@@ -45,14 +45,14 @@ contract Distributor is IDistributor, TOCAccessControlled {
 
     constructor(
         address _treasury,
-        address _ohm,
+        address _toc,
         address _staking,
         address _authority
     ) TOCAccessControlled(ITOCAuthority(_authority)) {
         require(_treasury != address(0), "Zero address: Treasury");
         treasury = ITreasury(_treasury);
-        require(_ohm != address(0), "Zero address: OHM");
-        ohm = IERC20(_ohm);
+        require(_toc != address(0), "Zero address: TOC");
+        toc = IERC20(_toc);
         require(_staking != address(0), "Zero address: Staking");
         staking = _staking;
     }
@@ -125,7 +125,7 @@ contract Distributor is IDistributor, TOCAccessControlled {
         @return uint
      */
     function nextRewardAt(uint256 _rate) public view override returns (uint256) {
-        return ohm.totalSupply().mul(_rate).div(rateDenominator);
+        return toc.totalSupply().mul(_rate).div(rateDenominator);
     }
 
     /**

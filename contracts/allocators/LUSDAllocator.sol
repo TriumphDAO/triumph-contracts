@@ -8,14 +8,14 @@ import "../interfaces/ITreasury.sol";
 import "./interfaces/ISwapRouter.sol";
 import "./interfaces/IWETH.sol";
 import "./interfaces/LiquityInterfaces.sol";
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 /**
  *  Contract deploys reserves from treasury into the liquity stabilty pool, and those rewards
  *  are then paid out to the staking contract.  See harvest() function for more details.
  */
 
-contract LUSDAllocator is OlympusAccessControlled {
+contract LUSDAllocator is TOCAccessControlled {
     /* ======== DEPENDENCIES ======== */
 
     using SafeERC20 for IERC20;
@@ -71,7 +71,7 @@ contract LUSDAllocator is OlympusAccessControlled {
         address _wethAddress,
         address _hopTokenAddress,
         address _uniswapV3Router
-    ) OlympusAccessControlled(IOlympusAuthority(_authority)) {
+    ) TOCAccessControlled(ITOCAuthority(_authority)) {
         treasury = ITreasury(_treasury);
         lusdTokenAddress = _lusdTokenAddress;
         lqtyTokenAddress = _lqtyTokenAddress;

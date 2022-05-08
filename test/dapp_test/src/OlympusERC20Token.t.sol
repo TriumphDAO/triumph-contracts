@@ -9,7 +9,7 @@ import "../../../contracts/OlympusAuthority.sol";
 contract OlymppusERC20TokenTest is DSTest {
     OlympusERC20Token internal ohmContract;
 
-    IOlympusAuthority internal authority;
+    ITOCAuthority internal authority;
 
     address internal UNAUTHORIZED_USER = address(0x1);
 

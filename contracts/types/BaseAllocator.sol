@@ -5,7 +5,7 @@ import "../interfaces/IAllocator.sol";
 import "../interfaces/ITreasury.sol";
 
 // types
-import "../types/OlympusAccessControlledV2.sol";
+import "../types/TOCAccessControlledV2.sol";
 
 // libraries
 import "../libraries/SafeERC20.sol";
@@ -69,7 +69,7 @@ error BaseAllocator_OnlyExtender(address sender);
  *
  *  This was a short summary of the Allocator lifecycle.
  */
-abstract contract BaseAllocator is OlympusAccessControlledV2, IAllocator {
+abstract contract BaseAllocator is TOCAccessControlledV2, IAllocator {
     using SafeERC20 for IERC20;
 
     // Indices which represent the ids of the deposits in the `TreasuryExtender`
@@ -87,7 +87,7 @@ abstract contract BaseAllocator is OlympusAccessControlledV2, IAllocator {
     // The extender with which the Allocator communicates.
     ITreasuryExtender public immutable extender;
 
-    constructor(AllocatorInitData memory data) OlympusAccessControlledV2(data.authority) {
+    constructor(AllocatorInitData memory data) TOCAccessControlledV2(data.authority) {
         _tokens = data.tokens;
         extender = data.extender;
 

@@ -12,9 +12,9 @@ import "./interfaces/IsOHM.sol";
 import "./interfaces/IBondingCalculator.sol";
 import "./interfaces/ITreasury.sol";
 
-import "./types/OlympusAccessControlled.sol";
+import "./types/TOCAccessControlled.sol";
 
-contract OlympusTreasury is OlympusAccessControlled, ITreasury {
+contract OlympusTreasury is TOCAccessControlled, ITreasury {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;
@@ -91,7 +91,7 @@ contract OlympusTreasury is OlympusAccessControlled, ITreasury {
         address _ohm,
         uint256 _timelock,
         address _authority
-    ) OlympusAccessControlled(IOlympusAuthority(_authority)) {
+    ) TOCAccessControlled(ITOCAuthority(_authority)) {
         require(_ohm != address(0), "Zero address: OHM");
         OHM = IOHM(_ohm);
 

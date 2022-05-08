@@ -6,7 +6,7 @@ import "../libraries/SafeERC20.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/ITreasury.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 interface IStaking {
     function stake(uint256 _amount, address _recipient) external returns (bool);
@@ -19,7 +19,7 @@ interface IStaking {
 /// @title   Meta Governance Allocator
 /// @author  Olympus
 /// @notice  Manages BTRFLY or LOBI from treasury to stake back to treasury
-contract MetaGovernanceAllocator is OlympusAccessControlled {
+contract MetaGovernanceAllocator is TOCAccessControlled {
     using SafeERC20 for IERC20;
 
     /// @notice Olympus Treasury
@@ -40,7 +40,7 @@ contract MetaGovernanceAllocator is OlympusAccessControlled {
     /// CONSTRUCTOR ///
 
     ///  @param _authority  Address of the Olympus Authority contract
-    constructor(IOlympusAuthority _authority) OlympusAccessControlled(_authority) {}
+    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {}
 
     /// POLICY FUNCTIONS ///
 

@@ -7,9 +7,9 @@ import "../libraries/SafeERC20.sol";
 import "../interfaces/ITreasury.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/IUniswapV2Router.sol";
-import "../interfaces/IOlympusAuthority.sol";
+import "../interfaces/ITOCAuthority.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 interface IBalancerVault {
     /**
@@ -59,7 +59,7 @@ interface IBalancerVault {
     }
 }
 
-contract BalancerLiquidityMigrator is OlympusAccessControlled {
+contract BalancerLiquidityMigrator is TOCAccessControlled {
     using SafeERC20 for IERC20;
 
     // Balancer Vault
@@ -80,7 +80,7 @@ contract BalancerLiquidityMigrator is OlympusAccessControlled {
     address internal immutable WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address internal immutable DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
-    constructor(IOlympusAuthority _authority) OlympusAccessControlled(_authority) {}
+    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {}
 
     /**
      * @notice Removes liquidity from OHM/ETH SLP and OHM/DAI SLP, then adds liquidty to

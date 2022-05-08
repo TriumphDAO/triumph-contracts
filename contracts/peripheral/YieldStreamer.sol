@@ -5,7 +5,7 @@ import {IERC20} from "../interfaces/IERC20.sol";
 import {IgOHM} from "../interfaces/IgOHM.sol";
 import {SafeERC20} from "../libraries/SafeERC20.sol";
 import {IYieldStreamer} from "../interfaces/IYieldStreamer.sol";
-import {OlympusAccessControlled, IOlympusAuthority} from "../types/OlympusAccessControlled.sol";
+import {TOCAccessControlled, ITOCAuthority} from "../types/TOCAccessControlled.sol";
 import {IUniswapV2Router} from "../interfaces/IUniswapV2Router.sol";
 import {IStaking} from "../interfaces/IStaking.sol";
 import {YieldSplitter} from "../types/YieldSplitter.sol";
@@ -22,7 +22,7 @@ error YieldStreamer_InvalidAmount();
     @notice This contract allows users to deposit their gOhm and have their yield
             converted into a streamToken(normally DAI) and sent to their address every interval.
  */
-contract YieldStreamer is IYieldStreamer, YieldSplitter, OlympusAccessControlled {
+contract YieldStreamer is IYieldStreamer, YieldSplitter, TOCAccessControlled {
     using SafeERC20 for IERC20;
 
     uint256 private constant MAX_INT = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
@@ -84,7 +84,7 @@ contract YieldStreamer is IYieldStreamer, YieldSplitter, OlympusAccessControlled
         uint128 maxSwapSlippagePercent_,
         uint128 feeToDaoPercent_,
         uint256 minimumTokenThreshold_
-    ) YieldSplitter(sOHM_) OlympusAccessControlled(IOlympusAuthority(authority_)) {
+    ) YieldSplitter(sOHM_) TOCAccessControlled(ITOCAuthority(authority_)) {
         gOHM = gOHM_;
         OHM = OHM_;
         streamToken = streamToken_;

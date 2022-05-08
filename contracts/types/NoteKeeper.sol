@@ -17,7 +17,7 @@ abstract contract NoteKeeper is INoteKeeper, FrontEndRewarder {
     ITreasury internal treasury;
 
     constructor(
-        IOlympusAuthority _authority,
+        ITOCAuthority _authority,
         IERC20 _ohm,
         IgOHM _gohm,
         IStaking _staking,

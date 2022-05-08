@@ -8,7 +8,7 @@ import "../libraries/SafeERC20.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/ITreasury.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 interface ILendingPool {
     function deposit(
@@ -47,7 +47,7 @@ interface IStakedTokenIncentivesController {
  *  earning interest and $stkAAVE.
  */
 
-contract AaveAllocator is OlympusAccessControlled {
+contract AaveAllocator is TOCAccessControlled {
     /* ======== DEPENDENCIES ======== */
 
     using SafeERC20 for IERC20;
@@ -86,7 +86,7 @@ contract AaveAllocator is OlympusAccessControlled {
 
     /* ======== CONSTRUCTOR ======== */
 
-    constructor(IOlympusAuthority _authority) OlympusAccessControlled(_authority) {
+    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {
         referralCode = 0;
     }
 

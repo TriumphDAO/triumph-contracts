@@ -12,12 +12,12 @@ import "../interfaces/IUniswapV2Router.sol";
 import "../interfaces/IStakingV1.sol";
 import "../interfaces/ITreasuryV1.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 import "../libraries/SafeMath.sol";
 import "../libraries/SafeERC20.sol";
 
-contract OlympusTokenMigrator is OlympusAccessControlled {
+contract OlympusTokenMigrator is TOCAccessControlled {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     using SafeERC20 for IgOHM;
@@ -65,7 +65,7 @@ contract OlympusTokenMigrator is OlympusAccessControlled {
         address _uni,
         uint256 _timelock,
         address _authority
-    ) OlympusAccessControlled(IOlympusAuthority(_authority)) {
+    ) TOCAccessControlled(ITOCAuthority(_authority)) {
         require(_oldOHM != address(0), "Zero address: OHM");
         oldOHM = IERC20(_oldOHM);
         require(_oldsOHM != address(0), "Zero address: sOHM");

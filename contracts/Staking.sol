@@ -9,9 +9,9 @@ import "./interfaces/IsOHM.sol";
 import "./interfaces/IgOHM.sol";
 import "./interfaces/IDistributor.sol";
 
-import "./types/OlympusAccessControlled.sol";
+import "./types/TOCAccessControlled.sol";
 
-contract OlympusStaking is OlympusAccessControlled {
+contract TOCStaking is TOCAccessControlled {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;
@@ -64,7 +64,7 @@ contract OlympusStaking is OlympusAccessControlled {
         uint256 _firstEpochNumber,
         uint256 _firstEpochTime,
         address _authority
-    ) OlympusAccessControlled(IOlympusAuthority(_authority)) {
+    ) TOCAccessControlled(ITOCAuthority(_authority)) {
         require(_ohm != address(0), "Zero address: OHM");
         OHM = IERC20(_ohm);
         require(_sOHM != address(0), "Zero address: sOHM");

@@ -7,9 +7,9 @@ import "../libraries/SafeERC20.sol";
 import "../interfaces/ITreasury.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/IUniswapV2Router.sol";
-import "../interfaces/IOlympusAuthority.sol";
+import "../interfaces/ITOCAuthority.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 interface IGUniRouter {
     function addLiquidity(
@@ -22,7 +22,7 @@ interface IGUniRouter {
     ) external;
 }
 
-contract GelatoLiquidityMigrator is OlympusAccessControlled {
+contract GelatoLiquidityMigrator is TOCAccessControlled {
     using SafeERC20 for IERC20;
 
     // GUni Router
@@ -39,7 +39,7 @@ contract GelatoLiquidityMigrator is OlympusAccessControlled {
     address internal immutable OHM = 0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5;
     address internal immutable FRAX = 0x853d955aCEf822Db058eb8505911ED77F175b99e;
 
-    constructor(IOlympusAuthority _authority) OlympusAccessControlled(_authority) {}
+    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {}
 
     /**
      * @notice Removes liquidity from OHM/FRAX LP, then adds liquidty to

@@ -7,14 +7,14 @@ import "./libraries/SafeERC20.sol";
 import "./interfaces/IOwnable.sol";
 import "./interfaces/IERC20.sol";
 import "./interfaces/IERC20Metadata.sol";
-import "./interfaces/IOHM.sol";
+import "./interfaces/ITOC.sol";
 import "./interfaces/IsTOC.sol";
 import "./interfaces/IBondingCalculator.sol";
 import "./interfaces/ITreasury.sol";
 
 import "./types/TOCAccessControlled.sol";
 
-contract OlympusTreasury is TOCAccessControlled, ITreasury {
+contract TriumphTreasury is TOCAccessControlled, ITreasury {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;
@@ -44,8 +44,8 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
         LIQUIDITYMANAGER,
         RESERVEDEBTOR,
         REWARDMANAGER,
-        SOHM,
-        OHMDEBTOR
+        STOC,
+        TOCDEBTOR
     }
 
     struct Queue {
@@ -59,8 +59,8 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
 
     /* ========== STATE VARIABLES ========== */
 
-    IOHM public immutable OHM;
-    IsTOC public sOHM;
+    ITOC public immutable TOC;
+    IsTOC public sTOC;
 
     mapping(STATUS => address[]) public registry;
     mapping(STATUS => mapping(address => bool)) public permissions;
@@ -70,7 +70,7 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
 
     uint256 public totalReserves;
     uint256 public totalDebt;
-    uint256 public ohmDebt;
+    uint256 public tocDebt;
 
     Queue[] public permissionQueue;
     uint256 public immutable blocksNeededForQueue;
@@ -88,12 +88,12 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
     /* ========== CONSTRUCTOR ========== */
 
     constructor(
-        address _ohm,
+        address _toc,
         uint256 _timelock,
         address _authority
     ) TOCAccessControlled(ITOCAuthority(_authority)) {
-        require(_ohm != address(0), "Zero address: OHM");
-        OHM = IOHM(_ohm);
+        require(_toc != address(0), "Zero address: TOC");
+        TOC = ITOC(_toc);
 
         timelockEnabled = false;
         initialized = false;
@@ -103,7 +103,7 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
     /* ========== MUTATIVE FUNCTIONS ========== */
 
     /**
-     * @notice allow approved address to deposit an asset for OHM
+     * @notice allow approved address to deposit an asset for TOC
      * @param _amount uint256
      * @param _token address
      * @param _profit uint256
@@ -125,9 +125,9 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
         IERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
 
         uint256 value = tokenValue(_token, _amount);
-        // mint OHM needed and store amount of rewards for distribution
+        // mint TOC needed and store amount of rewards for distribution
         send_ = value.sub(_profit);
-        OHM.mint(msg.sender, send_);
+        TOC.mint(msg.sender, send_);
 
         totalReserves = totalReserves.add(value);
 
@@ -135,7 +135,7 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
     }
 
     /**
-     * @notice allow approved address to burn OHM for reserves
+     * @notice allow approved address to burn TOC for reserves
      * @param _amount uint256
      * @param _token address
      */
@@ -144,7 +144,7 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
         require(permissions[STATUS.RESERVESPENDER][msg.sender], notApproved);
 
         uint256 value = tokenValue(_token, _amount);
-        OHM.burnFrom(msg.sender, value);
+        TOC.burnFrom(msg.sender, value);
 
         totalReserves = totalReserves.sub(value);
 
@@ -174,21 +174,21 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
     }
 
     /**
-     * @notice mint new OHM using excess reserves
+     * @notice mint new TOC using excess reserves
      * @param _recipient address
      * @param _amount uint256
      */
     function mint(address _recipient, uint256 _amount) external override {
         require(permissions[STATUS.REWARDMANAGER][msg.sender], notApproved);
         require(_amount <= excessReserves(), insufficientReserves);
-        OHM.mint(_recipient, _amount);
+        TOC.mint(_recipient, _amount);
         emit Minted(msg.sender, _recipient, _amount);
     }
 
     /**
      * DEBT: The debt functions allow approved addresses to borrow treasury assets
-     * or OHM from the treasury, using sOHM as collateral. This might allow an
-     * sOHM holder to provide OHM liquidity without taking on the opportunity cost
+     * or TOC from the treasury, using sTOC as collateral. This might allow an
+     * sTOC holder to provide TOC liquidity without taking on the opportunity cost
      * of unstaking, or alter their backing without imposing risk onto the treasury.
      * Many of these use cases are yet to be defined, but they appear promising.
      * However, we urge the community to think critically and move slowly upon
@@ -202,8 +202,8 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
      */
     function incurDebt(uint256 _amount, address _token) external override {
         uint256 value;
-        if (_token == address(OHM)) {
-            require(permissions[STATUS.OHMDEBTOR][msg.sender], notApproved);
+        if (_token == address(TOC)) {
+            require(permissions[STATUS.TOCDEBTOR][msg.sender], notApproved);
             value = _amount;
         } else {
             require(permissions[STATUS.RESERVEDEBTOR][msg.sender], notApproved);
@@ -212,13 +212,13 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
         }
         require(value != 0, invalidToken);
 
-        sOHM.changeDebt(value, msg.sender, true);
-        require(sOHM.debtBalances(msg.sender) <= debtLimit[msg.sender], "Treasury: exceeds limit");
+        sTOC.changeDebt(value, msg.sender, true);
+        require(sTOC.debtBalances(msg.sender) <= debtLimit[msg.sender], "Treasury: exceeds limit");
         totalDebt = totalDebt.add(value);
 
-        if (_token == address(OHM)) {
-            OHM.mint(msg.sender, value);
-            ohmDebt = ohmDebt.add(value);
+        if (_token == address(TOC)) {
+            TOC.mint(msg.sender, value);
+            tocDebt = tocDebt.add(value);
         } else {
             totalReserves = totalReserves.sub(value);
             IERC20(_token).safeTransfer(msg.sender, _amount);
@@ -236,26 +236,26 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
         require(permissions[STATUS.RESERVETOKEN][_token], notAccepted);
         IERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
         uint256 value = tokenValue(_token, _amount);
-        sOHM.changeDebt(value, msg.sender, false);
+        sTOC.changeDebt(value, msg.sender, false);
         totalDebt = totalDebt.sub(value);
         totalReserves = totalReserves.add(value);
         emit RepayDebt(msg.sender, _token, _amount, value);
     }
 
     /**
-     * @notice allow approved address to repay borrowed reserves with OHM
+     * @notice allow approved address to repay borrowed reserves with TOC
      * @param _amount uint256
      */
-    function repayDebtWithOHM(uint256 _amount) external {
+    function repayDebtWithTOC(uint256 _amount) external {
         require(
-            permissions[STATUS.RESERVEDEBTOR][msg.sender] || permissions[STATUS.OHMDEBTOR][msg.sender],
+            permissions[STATUS.RESERVEDEBTOR][msg.sender] || permissions[STATUS.TOCDEBTOR][msg.sender],
             notApproved
         );
-        OHM.burnFrom(msg.sender, _amount);
-        sOHM.changeDebt(_amount, msg.sender, false);
+        TOC.burnFrom(msg.sender, _amount);
+        sTOC.changeDebt(_amount, msg.sender, false);
         totalDebt = totalDebt.sub(_amount);
-        ohmDebt = ohmDebt.sub(_amount);
-        emit RepayDebt(msg.sender, address(OHM), _amount, _amount);
+        tocDebt = tocDebt.sub(_amount);
+        emit RepayDebt(msg.sender, address(TOC), _amount, _amount);
     }
 
     /* ========== MANAGERIAL FUNCTIONS ========== */
@@ -305,8 +305,8 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
         address _calculator
     ) external onlyGovernor {
         require(timelockEnabled == false, "Use queueTimelock");
-        if (_status == STATUS.SOHM) {
-            sOHM = IsTOC(_address);
+        if (_status == STATUS.STOC) {
+            sTOC = IsTOC(_address);
         } else {
             permissions[_status][_address] = true;
 
@@ -402,9 +402,9 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
         require(!info.executed, "Action has already been executed");
         require(block.number >= info.timelockEnd, "Timelock not complete");
 
-        if (info.managing == STATUS.SOHM) {
+        if (info.managing == STATUS.STOC) {
             // 9
-            sOHM = IsTOC(info.toPermit);
+            sTOC = IsTOC(info.toPermit);
         } else {
             permissions[info.managing][info.toPermit] = true;
 
@@ -468,17 +468,17 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
      * @return uint
      */
     function excessReserves() public view override returns (uint256) {
-        return totalReserves.sub(OHM.totalSupply().sub(totalDebt));
+        return totalReserves.sub(TOC.totalSupply().sub(totalDebt));
     }
 
     /**
-     * @notice returns OHM valuation of asset
+     * @notice returns TOC valuation of asset
      * @param _token address
      * @param _amount uint256
      * @return value_ uint256
      */
     function tokenValue(address _token, uint256 _amount) public view override returns (uint256 value_) {
-        value_ = _amount.mul(10**IERC20Metadata(address(OHM)).decimals()).div(10**IERC20Metadata(_token).decimals());
+        value_ = _amount.mul(10**IERC20Metadata(address(TOC)).decimals()).div(10**IERC20Metadata(_token).decimals());
 
         if (permissions[STATUS.LIQUIDITYTOKEN][_token]) {
             value_ = IBondingCalculator(bondCalculator[_token]).valuation(_token, _amount);
@@ -491,6 +491,6 @@ contract OlympusTreasury is TOCAccessControlled, ITreasury {
      * @return uint256
      */
     function baseSupply() external view override returns (uint256) {
-        return OHM.totalSupply() - ohmDebt;
+        return TOC.totalSupply() - tocDebt;
     }
 }

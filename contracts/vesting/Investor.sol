@@ -44,6 +44,8 @@ contract InvestorClaimV2 is Ownable {
 
     /* ========== STATE VARIABLES ========== */
 
+    // TODO: change contract addresses
+
     // claim token
     IERC20 internal immutable ohm = IERC20(0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5);
     // payment token

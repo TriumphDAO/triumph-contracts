@@ -7,6 +7,8 @@ import "./libraries/SafeERC20.sol";
 
 import "./interfaces/IERC20Metadata.sol";
 import "./interfaces/IBondDepository.sol";
+import "./interfaces/ITOCAuthority.sol";
+import "./interfaces/IgTOC.sol";
 
 
 contract TriumphBondDepository is IBondDepository, NoteKeeper {
@@ -35,9 +37,9 @@ contract TriumphBondDepository is IBondDepository, NoteKeeper {
     /* ======== CONSTRUCTOR ======== */
 
     constructor(
-        ITriumphAuthority _authority,
+        ITOCAuthority _authority,
         IERC20 _totc,
-        Igtotc _gtotc,
+        IgTOC _gtotc,
         IStaking _staking,
         ITreasury _treasury
     ) NoteKeeper(_authority, _totc, _gtotc, _staking, _treasury) {
@@ -360,7 +362,7 @@ contract TriumphBondDepository is IBondDepository, NoteKeeper {
 
         marketsForQuote[address(_quoteToken)].push(id_);
 
-        emit CreateMarket(id_, address(totc), address(_quoteToken), _market[1]);
+        emit CreateMarket(id_, address(toc), address(_quoteToken), _market[1]);
     }
 
     /**

@@ -4,7 +4,7 @@ pragma solidity 0.8.10;
 import "../libraries/SafeERC20.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/ITreasury.sol";
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 interface ITokemakManager {
     function currentCycleIndex() external view returns (uint256);
@@ -43,7 +43,7 @@ interface IStakingPools {
  *  Sends back Alchemix token with accured reward to treasury.
  */
 
-contract AlchemixAllocator is OlympusAccessControlled {
+contract AlchemixAllocator is TOCAccessControlled {
     /* ======== DEPENDENCIES ======== */
 
     using SafeERC20 for IERC20;
@@ -67,7 +67,7 @@ contract AlchemixAllocator is OlympusAccessControlled {
         address _tALCX,
         address _pool,
         address _olympusAuthority
-    ) OlympusAccessControlled(IOlympusAuthority(_olympusAuthority)) {
+    ) TOCAccessControlled(ITOCAuthority(_olympusAuthority)) {
         require(_treasury != address(0));
         treasury = ITreasury(_treasury);
 

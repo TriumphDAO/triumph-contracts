@@ -5,8 +5,8 @@ import "../interfaces/IERC20.sol";
 import "../libraries/SafeERC20.sol";
 import "../libraries/SafeMath.sol";
 import "../interfaces/IUniswapV2Router.sol";
-import "../interfaces/IOlympusAuthority.sol";
-import "../types/OlympusAccessControlled.sol";
+import "../interfaces/ITOCAuthority.sol";
+import "../types/TOCAccessControlled.sol";
 import "../interfaces/ITreasury.sol";
 
 interface IMigrator {
@@ -24,7 +24,7 @@ interface IMigrator {
     ) external;
 }
 
-contract LiquidityMigrator is OlympusAccessControlled {
+contract LiquidityMigrator is TOCAccessControlled {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -34,7 +34,7 @@ contract LiquidityMigrator is OlympusAccessControlled {
     IERC20 internal immutable newOHM = IERC20(0x64aa3364F17a4D01c6f1751Fd97C2BD3D7e7f1D5);
     IMigrator internal immutable migrator = IMigrator(0x184f3FAd8618a6F458C16bae63F70C426fE784B3);
 
-    constructor(IOlympusAuthority _authority) OlympusAccessControlled(_authority) {}
+    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {}
 
     /**
      * @notice Migrate LP and pair with new OHM

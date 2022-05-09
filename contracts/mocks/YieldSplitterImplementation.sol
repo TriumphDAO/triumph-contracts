@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {YieldSplitter} from "../types/YieldSplitter.sol";
-import {IgOHM} from "../interfaces/IgOHM.sol";
+import {IgTOC} from "../interfaces/IgTOC.sol";
 
 /**
     @title YieldSplitterImpl

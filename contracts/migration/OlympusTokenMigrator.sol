@@ -2,9 +2,9 @@
 pragma solidity 0.7.5;
 
 import "../interfaces/IERC20.sol";
-import "../interfaces/IsOHM.sol";
+import "../interfaces/IsTOC.sol";
 import "../interfaces/IwsOHM.sol";
-import "../interfaces/IgOHM.sol";
+import "../interfaces/IgTOC.sol";
 import "../interfaces/ITreasury.sol";
 import "../interfaces/IStaking.sol";
 import "../interfaces/IOwnable.sol";
@@ -12,16 +12,16 @@ import "../interfaces/IUniswapV2Router.sol";
 import "../interfaces/IStakingV1.sol";
 import "../interfaces/ITreasuryV1.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 import "../libraries/SafeMath.sol";
 import "../libraries/SafeERC20.sol";
 
-contract OlympusTokenMigrator is OlympusAccessControlled {
+contract OlympusTokenMigrator is TOCAccessControlled {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-    using SafeERC20 for IgOHM;
-    using SafeERC20 for IsOHM;
+    using SafeERC20 for IgTOC;
+    using SafeERC20 for IsTOC;
     using SafeERC20 for IwsOHM;
 
     /* ========== MIGRATION ========== */
@@ -34,7 +34,7 @@ contract OlympusTokenMigrator is OlympusAccessControlled {
     /* ========== STATE VARIABLES ========== */
 
     IERC20 public immutable oldOHM;
-    IsOHM public immutable oldsOHM;
+    IsTOC public immutable oldsOHM;
     IwsOHM public immutable oldwsOHM;
     ITreasuryV1 public immutable oldTreasury;
     IStakingV1 public immutable oldStaking;
@@ -42,7 +42,7 @@ contract OlympusTokenMigrator is OlympusAccessControlled {
     IUniswapV2Router public immutable sushiRouter;
     IUniswapV2Router public immutable uniRouter;
 
-    IgOHM public gOHM;
+    IgTOC public gOHM;
     ITreasury public newTreasury;
     IStaking public newStaking;
     IERC20 public newOHM;
@@ -65,11 +65,11 @@ contract OlympusTokenMigrator is OlympusAccessControlled {
         address _uni,
         uint256 _timelock,
         address _authority
-    ) OlympusAccessControlled(IOlympusAuthority(_authority)) {
+    ) TOCAccessControlled(ITOCAuthority(_authority)) {
         require(_oldOHM != address(0), "Zero address: OHM");
         oldOHM = IERC20(_oldOHM);
         require(_oldsOHM != address(0), "Zero address: sOHM");
-        oldsOHM = IsOHM(_oldsOHM);
+        oldsOHM = IsTOC(_oldsOHM);
         require(_oldTreasury != address(0), "Zero address: Treasury");
         oldTreasury = ITreasuryV1(_oldTreasury);
         require(_oldStaking != address(0), "Zero address: Staking");
@@ -225,7 +225,7 @@ contract OlympusTokenMigrator is OlympusAccessControlled {
         require(address(gOHM) == address(0), "Already set");
         require(_gOHM != address(0), "Zero address: gOHM");
 
-        gOHM = IgOHM(_gOHM);
+        gOHM = IgTOC(_gOHM);
     }
 
     // call internal migrate token function

@@ -4,11 +4,11 @@ pragma solidity ^0.7.5;
 import "../libraries/SafeMath.sol";
 import "../libraries/Address.sol";
 
-import "../interfaces/IsOHM.sol";
-import "../interfaces/IgOHM.sol";
+import "../interfaces/IsTOC.sol";
+import "../interfaces/IgTOC.sol";
 import "../types/ERC20.sol";
 
-contract gOHM is IgOHM, ERC20 {
+contract gOHM is IgTOC, ERC20 {
     /* ========== DEPENDENCIES ========== */
 
     using Address for address;
@@ -36,7 +36,7 @@ contract gOHM is IgOHM, ERC20 {
 
     /* ========== STATE VARIABLES ========== */
 
-    IsOHM public sOHM;
+    IsTOC public sOHM;
     address public approved; // minter
     bool public migrated;
 
@@ -50,7 +50,7 @@ contract gOHM is IgOHM, ERC20 {
         require(_migrator != address(0), "Zero address: Migrator");
         approved = _migrator;
         require(_sOHM != address(0), "Zero address: sOHM");
-        sOHM = IsOHM(_sOHM);
+        sOHM = IsTOC(_sOHM);
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
@@ -70,7 +70,7 @@ contract gOHM is IgOHM, ERC20 {
         approved = _staking;
 
         require(_sOHM != address(0), "Zero address found");
-        sOHM = IsOHM(_sOHM);
+        sOHM = IsTOC(_sOHM);
     }
 
     /**

@@ -8,7 +8,7 @@ import "../libraries/SafeERC20.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/ITreasury.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 interface ICurve3Pool {
     // add liquidity to Curve to receive back 3CRV tokens
@@ -54,7 +54,7 @@ interface IConvexRewards {
  *  earning interest and $CVX.
  */
 
-contract ConvexAllocator is OlympusAccessControlled {
+contract ConvexAllocator is TOCAccessControlled {
     /* ======== DEPENDENCIES ======== */
 
     using SafeERC20 for IERC20;
@@ -94,7 +94,7 @@ contract ConvexAllocator is OlympusAccessControlled {
 
     /* ======== CONSTRUCTOR ======== */
 
-    constructor(IOlympusAuthority _authority) OlympusAccessControlled(_authority) {}
+    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {}
 
     /* ======== OPEN FUNCTIONS ======== */
 

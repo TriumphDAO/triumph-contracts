@@ -2,12 +2,12 @@
 pragma solidity ^0.8.10;
 
 import {IERC20} from "../interfaces/IERC20.sol";
-import {IsOHM} from "../interfaces/IsOHM.sol";
+import {IsTOC} from "../interfaces/IsTOC.sol";
 import {IStaking} from "../interfaces/IStaking.sol";
 import {IYieldDirector} from "../interfaces/IYieldDirector.sol";
 import {SafeERC20} from "../libraries/SafeERC20.sol";
 import {YieldSplitter} from "../types/YieldSplitter.sol";
-import {OlympusAccessControlled, IOlympusAuthority} from "../types/OlympusAccessControlled.sol";
+import {TOCAccessControlled, ITOCAuthority} from "../types/TOCAccessControlled.sol";
 
 /**
     @title  YieldDirector (codename Tyche) 
@@ -19,7 +19,7 @@ import {OlympusAccessControlled, IOlympusAuthority} from "../types/OlympusAccess
             withdraw or redeem functions) will take the ID of the deposit. All functions that return
             aggregated data grouped by user will take an address (iterates across all relevant IDs).
  */
-contract YieldDirector is IYieldDirector, YieldSplitter, OlympusAccessControlled {
+contract YieldDirector is IYieldDirector, YieldSplitter, TOCAccessControlled {
     using SafeERC20 for IERC20;
 
     error YieldDirector_InvalidAddress();
@@ -54,7 +54,7 @@ contract YieldDirector is IYieldDirector, YieldSplitter, OlympusAccessControlled
         address gOhm_,
         address staking_,
         address authority_
-    ) OlympusAccessControlled(IOlympusAuthority(authority_)) YieldSplitter(sOhm_) {
+    ) TOCAccessControlled(ITOCAuthority(authority_)) YieldSplitter(sOhm_) {
         if (sOhm_ == address(0) || gOhm_ == address(0) || staking_ == address(0) || authority_ == address(0))
             revert YieldDirector_InvalidAddress();
 

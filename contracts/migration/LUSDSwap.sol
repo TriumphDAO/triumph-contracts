@@ -7,9 +7,9 @@ import "../libraries/SafeERC20.sol";
 import "../interfaces/ITreasury.sol";
 import "../interfaces/ITreasuryV1.sol";
 import "../interfaces/IERC20.sol";
-import "../interfaces/IOlympusAuthority.sol";
+import "../interfaces/ITOCAuthority.sol";
 
-import "../types/OlympusAccessControlled.sol";
+import "../types/TOCAccessControlled.sol";
 
 interface ICurveFactory {
     function exchange_underlying(
@@ -23,7 +23,7 @@ interface ICurveFactory {
 /// @title   LUSD Swap Contract
 /// @notice  Swaps LUSD from treasury v1 to DAI then sends to treasury v2
 /// @author  JeffX
-contract LUSDSwapContract is OlympusAccessControlled {
+contract LUSDSwapContract is TOCAccessControlled {
     using SafeERC20 for IERC20;
 
     /// ERRORS ///
@@ -51,7 +51,7 @@ contract LUSDSwapContract is OlympusAccessControlled {
     /// CONSTRUCTOR ///
 
     /// @param _authority  Address of the Olympus Authority contract
-    constructor(IOlympusAuthority _authority) OlympusAccessControlled(_authority) {
+    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {
         OHMV1BackingInDAIRemaining = OHMV1.totalSupply() * 1e9;
     }
 

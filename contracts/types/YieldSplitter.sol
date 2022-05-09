@@ -2,12 +2,12 @@
 pragma solidity ^0.8.10;
 
 import {IERC20} from "../interfaces/IERC20.sol";
-import {IgOHM} from "../interfaces/IgOHM.sol";
+import {IgTOC} from "../interfaces/IgTOC.sol";
 import {SafeERC20} from "../libraries/SafeERC20.sol";
 
 /**
     @title IOHMIndexWrapper
-    @notice This interface is used to wrap cross-chain oracles to feed an index without needing IsOHM, 
+    @notice This interface is used to wrap cross-chain oracles to feed an index without needing IsTOC, 
     while also being able to use sOHM on mainnet.
  */
 interface IOHMIndexWrapper {

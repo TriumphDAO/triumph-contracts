@@ -5,7 +5,7 @@ import "./interfaces/ITOCAuthority.sol";
 
 import "./types/TOCAccessControlled.sol";
 
-contract OlympusAuthority is ITOCAuthority, TOCAccessControlled {
+contract TriumphAuthority is ITOCAuthority, TOCAccessControlled {
     /* ========== STATE VARIABLES ========== */
 
     address public override governor;

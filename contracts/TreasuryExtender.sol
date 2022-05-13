@@ -23,7 +23,7 @@ error TreasuryExtender_MaxAllocation(uint256 allocated, uint256 limit);
  * @title Treasury Extender
  * @notice
  *  This contract serves as an accounting and management contract which
- *  will interact with the Olympus Treasury to fund Allocators.
+ *  will interact with the Triumph Treasury to fund Allocators.
  *
  *  Accounting:
  *  For each Allocator there are multiple deposit IDs referring to individual tokens,
@@ -47,7 +47,7 @@ error TreasuryExtender_MaxAllocation(uint256 allocated, uint256 limit);
 contract TreasuryExtender is TOCAccessControlledV2, ITreasuryExtender {
     using SafeERC20 for IERC20;
 
-    // The Olympus Treasury.
+    // The Triumph Treasury.
     ITreasury public immutable treasury;
 
     // Enumerable Allocators according to deposit IDs.
@@ -211,7 +211,7 @@ contract TreasuryExtender is TOCAccessControlledV2, ITreasuryExtender {
 
     /**
      * @notice
-     *  Requests funds from the Olympus Treasury to fund an Allocator.
+     *  Requests funds from the Triumph Treasury to fund an Allocator.
      * @dev
      *  Can only be called while the Allocator is activated.
      *  Can only be called by the Guardian.

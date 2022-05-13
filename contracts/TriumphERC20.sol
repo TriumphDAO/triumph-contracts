@@ -4,18 +4,18 @@ pragma solidity ^0.7.5;
 import "./libraries/SafeMath.sol";
 
 import "./interfaces/IERC20.sol";
-import "./interfaces/IOHM.sol";
+import "./interfaces/ITOC.sol";
 import "./interfaces/IERC20Permit.sol";
 
 import "./types/ERC20Permit.sol";
 import "./types/TOCAccessControlled.sol";
 
-contract OlympusERC20Token is ERC20Permit, IOHM, TOCAccessControlled {
+contract TriumphERC20Token is ERC20Permit, ITOC, TOCAccessControlled {
     using SafeMath for uint256;
 
     constructor(address _authority)
-        ERC20("Olympus", "OHM", 9)
-        ERC20Permit("Olympus")
+        ERC20("Triumph", "TOC", 9)
+        ERC20Permit("Triumph")
         TOCAccessControlled(ITOCAuthority(_authority))
     {}
 

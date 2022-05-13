@@ -10,7 +10,7 @@ import "./interfaces/IgTOC.sol";
 import "./interfaces/IsTOC.sol";
 import "./interfaces/IStaking.sol";
 
-contract sOlympus is IsTOC, ERC20Permit {
+contract sTriumph is IsTOC, ERC20Permit {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;

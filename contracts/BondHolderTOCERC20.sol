@@ -5,13 +5,14 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
+import "./types/TOCAccessControl.sol";
 
-contract BondHolderTOC is ERC20, Ownable, ERC20Permit, ERC20Votes {
+contract BondHolderTOC is ERC20, Ownable, ERC20Permit, ERC20Votes, TOCAccessControl {
     constructor() ERC20("BondHolderTOC", "bTOC") ERC20Permit("BondHolderTOC") {
         _mint(msg.sender, 1000000 * 10 ** decimals());
     }
 
-    function mint(address to, uint256 amount) public onlyOwner {
+    function mint(address to, uint256 amount) public onlyGovernor {
         _mint(to, amount);
     }
 

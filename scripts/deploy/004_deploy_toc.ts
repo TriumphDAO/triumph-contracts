@@ -6,19 +6,16 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     const { deployments, getNamedAccounts } = hre;
     const { deploy } = deployments;
     const { deployer } = await getNamedAccounts();
+    const authorityDeployment = await deployments.get(CONTRACTS.authority);
 
-    const sOhmDeployment = await deployments.get(CONTRACTS.sOhm);
-    const migratorDeployment = await deployments.get(CONTRACTS.migrator);
-
-    await deploy(CONTRACTS.gOhm, {
+    await deploy(CONTRACTS.toc, {
         from: deployer,
-        args: [migratorDeployment.address, sOhmDeployment.address],
+        args: [authorityDeployment.address],
         log: true,
         skipIfAlreadyDeployed: true,
     });
 };
 
-func.tags = [CONTRACTS.gOhm, "migration", "tokens"];
-func.dependencies = [CONTRACTS.migrator];
-
+func.tags = [CONTRACTS.toc, "staking", "tokens"];
+func.dependencies = [CONTRACTS.authority];
 export default func;

@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity >=0.7.5;
 
-import "../interfaces/ITOCAuthority.sol";
+import "../interfaces/ITriumphAuthority.sol";
 
-abstract contract TOCAccessControlled {
+abstract contract TriumphAccessControlled {
     /* ========== EVENTS ========== */
 
-    event AuthorityUpdated(ITOCAuthority indexed authority);
+    event AuthorityUpdated(ITriumphAuthority indexed authority);
 
     string UNAUTHORIZED = "UNAUTHORIZED"; // save gas
 
     /* ========== STATE VARIABLES ========== */
 
-    ITOCAuthority public authority;
+    ITriumphAuthority public authority;
 
     /* ========== Constructor ========== */
 
-    constructor(ITOCAuthority _authority) {
+    constructor(ITriumphAuthority _authority) {
         authority = _authority;
         emit AuthorityUpdated(_authority);
     }
@@ -45,7 +45,7 @@ abstract contract TOCAccessControlled {
 
     /* ========== GOV ONLY ========== */
 
-    function setAuthority(ITOCAuthority _newAuthority) external onlyGovernor {
+    function setAuthority(ITriumphAuthority _newAuthority) external onlyGovernor {
         authority = _newAuthority;
         emit AuthorityUpdated(_newAuthority);
     }

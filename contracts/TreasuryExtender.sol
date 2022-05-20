@@ -7,7 +7,7 @@ import "./interfaces/IAllocator.sol";
 import "./interfaces/ITreasuryExtender.sol";
 
 // types
-import "./types/TOCAccessControlledV2.sol";
+import "./types/TriumphAccessControlledV2.sol";
 
 // libraries
 import "./libraries/SafeERC20.sol";
@@ -44,7 +44,7 @@ error TreasuryExtender_MaxAllocation(uint256 allocated, uint256 limit);
  *  (see BaseAllocator.sol) while rewards are retrievable by the standard ERC20 functions.
  *  The point is that we only exactly track that which exits the Treasury.
  */
-contract TreasuryExtender is TOCAccessControlledV2, ITreasuryExtender {
+contract TreasuryExtender is TriumphAccessControlledV2, ITreasuryExtender {
     using SafeERC20 for IERC20;
 
     // The Triumph Treasury.
@@ -58,7 +58,7 @@ contract TreasuryExtender is TOCAccessControlledV2, ITreasuryExtender {
     mapping(IAllocator => mapping(uint256 => AllocatorData)) public allocatorData;
 
     constructor(address treasuryAddress, address authorityAddress)
-        TOCAccessControlledV2(ITOCAuthority(authorityAddress))
+        TriumphAccessControlledV2(ITriumphAuthority(authorityAddress))
     {
         treasury = ITreasury(treasuryAddress);
         // This nonexistent allocator at address(0) is pushed

@@ -6,18 +6,16 @@ import "./libraries/SafeERC20.sol";
 
 import "./interfaces/IERC20.sol";
 import "./interfaces/IsTOC.sol";
-import "./interfaces/IgTOC.sol";
 import "./interfaces/IDistributor.sol";
 
-import "./types/TOCAccessControlled.sol";
+import "./types/TriumphAccessControlled.sol";
 
-contract TOCStaking is TOCAccessControlled {
+contract TriumphStaking is TriumphAccessControlled {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     using SafeERC20 for IsTOC;
-    using SafeERC20 for IgTOC;
 
     /* ========== EVENTS ========== */
 
@@ -44,7 +42,6 @@ contract TOCStaking is TOCAccessControlled {
 
     IERC20 public immutable TOC;
     IsTOC public immutable sTOC;
-    IgTOC public immutable gTOC;
 
     Epoch public epoch;
 
@@ -59,18 +56,15 @@ contract TOCStaking is TOCAccessControlled {
     constructor(
         address _toc,
         address _sTOC,
-        address _gTOC,
         uint256 _epochLength,
         uint256 _firstEpochNumber,
         uint256 _firstEpochTime,
         address _authority
-    ) TOCAccessControlled(ITOCAuthority(_authority)) {
+    ) TriumphAccessControlled(ITriumphAuthority(_authority)) {
         require(_toc != address(0), "Zero address: TOC");
         TOC = IERC20(_toc);
         require(_sTOC != address(0), "Zero address: sTOC");
         sTOC = IsTOC(_sTOC);
-        require(_gTOC != address(0), "Zero address: gTOC");
-        gTOC = IgTOC(_gTOC);
 
         epoch = Epoch({length: _epochLength, number: _firstEpochNumber, end: _firstEpochTime, distribute: 0});
     }
@@ -181,37 +175,10 @@ contract TOCStaking is TOCAccessControlled {
         if (_rebasing) {
             sTOC.safeTransferFrom(msg.sender, address(this), _amount);
             amount_ = amount_.add(bounty);
-        } else {
-            gTOC.burn(msg.sender, _amount); // amount was given in gTOC terms
-            amount_ = gTOC.balanceFrom(amount_).add(bounty); // convert amount to TOC terms & add bounty
         }
 
         require(amount_ <= TOC.balanceOf(address(this)), "Insufficient TOC balance in contract");
         TOC.safeTransfer(_to, amount_);
-    }
-
-    /**
-     * @notice convert _amount sTOC into gBalance_ gTOC
-     * @param _to address
-     * @param _amount uint
-     * @return gBalance_ uint
-     */
-    function wrap(address _to, uint256 _amount) external returns (uint256 gBalance_) {
-        sTOC.safeTransferFrom(msg.sender, address(this), _amount);
-        gBalance_ = gTOC.balanceTo(_amount);
-        gTOC.mint(_to, gBalance_);
-    }
-
-    /**
-     * @notice convert _amount gTOC into sBalance_ sTOC
-     * @param _to address
-     * @param _amount uint
-     * @return sBalance_ uint
-     */
-    function unwrap(address _to, uint256 _amount) external returns (uint256 sBalance_) {
-        gTOC.burn(msg.sender, _amount);
-        sBalance_ = gTOC.balanceFrom(_amount);
-        sTOC.safeTransfer(_to, sBalance_);
     }
 
     /**
@@ -244,7 +211,7 @@ contract TOCStaking is TOCAccessControlled {
     /* ========== INTERNAL FUNCTIONS ========== */
 
     /**
-     * @notice send staker their amount as sTOC or gTOC
+     * @notice send staker their amount as sTOC
      * @param _to address
      * @param _amount uint
      * @param _rebasing bool
@@ -257,9 +224,6 @@ contract TOCStaking is TOCAccessControlled {
         if (_rebasing) {
             sTOC.safeTransfer(_to, _amount); // send as sTOC (equal unit as TOC)
             return _amount;
-        } else {
-            gTOC.mint(_to, gTOC.balanceTo(_amount)); // send as gTOC (convert units from TOC)
-            return gTOC.balanceTo(_amount);
         }
     }
 

@@ -8,9 +8,9 @@ import "./interfaces/IERC20.sol";
 import "./interfaces/ITreasury.sol";
 import "./interfaces/IDistributor.sol";
 
-import "./types/TOCAccessControlled.sol";
+import "./types/TriumphAccessControlled.sol";
 
-contract Distributor is IDistributor, TOCAccessControlled {
+contract Distributor is IDistributor, TriumphAccessControlled {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;
@@ -48,7 +48,7 @@ contract Distributor is IDistributor, TOCAccessControlled {
         address _toc,
         address _staking,
         address _authority
-    ) TOCAccessControlled(ITOCAuthority(_authority)) {
+    ) TriumphAccessControlled(ITriumphAuthority(_authority)) {
         require(_treasury != address(0), "Zero address: Treasury");
         treasury = ITreasury(_treasury);
         require(_toc != address(0), "Zero address: TOC");

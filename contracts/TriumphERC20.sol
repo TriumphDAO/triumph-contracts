@@ -8,15 +8,15 @@ import "./interfaces/ITOC.sol";
 import "./interfaces/IERC20Permit.sol";
 
 import "./types/ERC20Permit.sol";
-import "./types/TOCAccessControlled.sol";
+import "./types/TriumphAccessControlled.sol";
 
-contract TriumphERC20Token is ERC20Permit, ITOC, TOCAccessControlled {
+contract TriumphERC20Token is ERC20Permit, ITOC, TriumphAccessControlled {
     using SafeMath for uint256;
 
     constructor(address _authority)
         ERC20("Triumph", "TOC", 9)
         ERC20Permit("Triumph")
-        TOCAccessControlled(ITOCAuthority(_authority))
+        TriumphAccessControlled(ITriumphAuthority(_authority))
     {}
 
     function mint(address account_, uint256 amount_) external override onlyVault {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-pragma solidity 0.7.5;
+pragma solidity 0.8.10;
 
 import "../libraries/Address.sol";
 import "../libraries/SafeMath.sol";
@@ -8,7 +8,7 @@ import "../libraries/SafeERC20.sol";
 import "../interfaces/IERC20.sol";
 import "../interfaces/ITreasury.sol";
 
-import "../types/TOCAccessControlled.sol";
+import "../types/TriumphAccessControlled.sol";
 
 interface ILendingPool {
     function deposit(
@@ -47,7 +47,7 @@ interface IStakedTokenIncentivesController {
  *  earning interest and $stkAAVE.
  */
 
-contract AaveAllocator is TOCAccessControlled {
+contract AaveAllocator is TriumphAccessControlled {
     /* ======== DEPENDENCIES ======== */
 
     using SafeERC20 for IERC20;
@@ -86,7 +86,7 @@ contract AaveAllocator is TOCAccessControlled {
 
     /* ======== CONSTRUCTOR ======== */
 
-    constructor(ITOCAuthority _authority) TOCAccessControlled(_authority) {
+    constructor(ITriumphAuthority _authority) TriumphAccessControlled(_authority) {
         referralCode = 0;
     }
 

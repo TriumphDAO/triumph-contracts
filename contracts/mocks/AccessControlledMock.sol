@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Unlicensed
-pragma solidity 0.7.5;
+pragma solidity 0.8.10;
 
-import "../types/TOCAccessControlled.sol";
+import "../types/TriumphAccessControlled.sol";
 
-contract AccessControlledMock is TOCAccessControlled {
-    constructor(address _auth) TOCAccessControlled(ITOCAuthority(_auth)) {}
+contract AccessControlledMock is TriumphAccessControlled {
+    constructor(address _auth) TriumphAccessControlled(ITriumphAuthority(_auth)) {}
 
     bool public governorOnlyTest;
 

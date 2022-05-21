@@ -75,5 +75,8 @@
   "bugs": {
     "url": "https://github.com/OlympusDAO/olympus-contracts/issues"
   },
-  "homepage": "https://github.com/OlympusDAO/olympus-contracts#readme"
+  "homepage": "https://github.com/OlympusDAO/olympus-contracts#readme",
+  "dependencies": {
+    "usingtellor": "^4.0.6"
+  }
 }

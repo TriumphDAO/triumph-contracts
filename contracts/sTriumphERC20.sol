@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity ^0.7.5;
+pragma solidity ^0.8.10;
 
 import "./libraries/Address.sol";
 import "./libraries/SafeMath.sol";
 
 import "./types/ERC20Permit.sol";
 
-import "./interfaces/IgTOC.sol";
+import "./interfaces/IbTOC.sol";
 import "./interfaces/IsTOC.sol";
 import "./interfaces/IStaking.sol";
 
@@ -47,7 +47,7 @@ contract sTriumph is IsTOC, ERC20Permit {
     uint256 internal INDEX; // Index Gons - tracks rebase growth
 
     address public stakingContract; // balance used to calc rebase
-    IgTOC public gOHM; // additional staked supply (governance token)
+    IbTOC public bTOC; // additional staked supply (governance token) TODO remove bTOC from staking
 
     Rebase[] public rebases; // past rebase data
 
@@ -71,7 +71,7 @@ contract sTriumph is IsTOC, ERC20Permit {
 
     /* ========== CONSTRUCTOR ========== */
 
-    constructor() ERC20("Staked OHM", "sOHM", 9) ERC20Permit("Staked OHM") {
+    constructor() ERC20("Staked TOC", "sTOC", 9) ERC20Permit("Staked TOC") {
         initializer = msg.sender;
         _totalSupply = INITIAL_FRAGMENTS_SUPPLY;
         _gonsPerFragment = TOTAL_GONS.div(_totalSupply);
@@ -85,11 +85,11 @@ contract sTriumph is IsTOC, ERC20Permit {
         INDEX = gonsForBalance(_index);
     }
 
-    function setgOHM(address _gOHM) external {
+    function setbTOC(address _bTOC) external {
         require(msg.sender == initializer, "Initializer:  caller is not initializer");
-        require(address(gOHM) == address(0), "gOHM:  gOHM already set");
-        require(_gOHM != address(0), "gOHM:  gOHM is not a valid contract");
-        gOHM = IgTOC(_gOHM);
+        require(address(bTOC) == address(0), "bTOC:  bTOC already set");
+        require(_bTOC != address(0), "bTOC:  bTOC is not a valid contract");
+        bTOC = IbTOC(_bTOC);
     }
 
     // do this last
@@ -112,7 +112,7 @@ contract sTriumph is IsTOC, ERC20Permit {
     /* ========== REBASE ========== */
 
     /**
-        @notice increases rOHM supply to increase staking balances relative to profit_
+        @notice increases rTOC supply to increase staking balances relative to profit_
         @param profit_ uint256
         @return uint256
      */
@@ -220,8 +220,8 @@ contract sTriumph is IsTOC, ERC20Permit {
         return true;
     }
 
-    // this function is called by the treasury, and informs sOHM of changes to debt.
-    // note that addresses with debt balances cannot transfer collateralized sOHM
+    // this function is called by the treasury, and informs sTOC of changes to debt.
+    // note that addresses with debt balances cannot transfer collateralized sTOC
     // until the debt has been repaid.
     function changeDebt(
         uint256 amount,
@@ -234,7 +234,7 @@ contract sTriumph is IsTOC, ERC20Permit {
         } else {
             debtBalances[debtor] = debtBalances[debtor].sub(amount);
         }
-        require(debtBalances[debtor] <= balanceOf(debtor), "sOHM: insufficient balance");
+        require(debtBalances[debtor] <= balanceOf(debtor), "sTOC: insufficient balance");
     }
 
     /* ========== INTERNAL FUNCTIONS ========== */
@@ -262,20 +262,20 @@ contract sTriumph is IsTOC, ERC20Permit {
         return gons.div(_gonsPerFragment);
     }
 
-    // toG converts an sOHM balance to gOHM terms. gOHM is an 18 decimal token. balance given is in 18 decimal format.
+    // toG converts an sTOC balance to bTOC terms. bTOC is an 18 decimal token. balance given is in 18 decimal format.
     function toG(uint256 amount) external view override returns (uint256) {
-        return gOHM.balanceTo(amount);
+        return bTOC.balanceTo(amount);
     }
 
-    // fromG converts a gOHM balance to sOHM terms. sOHM is a 9 decimal token. balance given is in 9 decimal format.
+    // fromG converts a bTOC balance to sTOC terms. sTOC is a 9 decimal token. balance given is in 9 decimal format.
     function fromG(uint256 amount) external view override returns (uint256) {
-        return gOHM.balanceFrom(amount);
+        return bTOC.balanceFrom(amount);
     }
 
-    // Staking contract holds excess sOHM
+    // Staking contract holds excess sTOC
     function circulatingSupply() public view override returns (uint256) {
         return
-            _totalSupply.sub(balanceOf(stakingContract)).add(gOHM.balanceFrom(IERC20(address(gOHM)).totalSupply())).add(
+            _totalSupply.sub(balanceOf(stakingContract)).add(bTOC.balanceFrom(IERC20(address(bTOC)).totalSupply())).add(
                 IStaking(stakingContract).supplyInWarmup()
             );
     }

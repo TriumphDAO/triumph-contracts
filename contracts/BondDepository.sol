@@ -2,13 +2,14 @@
 pragma solidity ^0.8.10;
 
 import "./types/NoteKeeper.sol";
-import "./governance/GovernanceAggregator.sol";
+import "./GovernanceAggregator.sol";
 
 import "./libraries/SafeERC20.sol";
 
 import "./interfaces/IERC20Metadata.sol";
 import "./interfaces/IBondDepository.sol";
-import "./interfaces/ITOCAuthority.sol";
+import "./interfaces/ITriumphAuthority.sol";
+import "./interfaces/IbTOC.sol";
 
 contract TriumphBondDepository is IBondDepository, NoteKeeper, GovernanceAggregator {
     /* ======== DEPENDENCIES ======== */
@@ -36,11 +37,12 @@ contract TriumphBondDepository is IBondDepository, NoteKeeper, GovernanceAggrega
     /* ======== CONSTRUCTOR ======== */
 
     constructor(
-        ITOCAuthority _authority,
+        ITriumphAuthority _authority,
         IERC20 _totc,
+        IbTOC _btotc,
         IStaking _staking,
         ITreasury _treasury
-    ) NoteKeeper(_authority, _totc, _gtotc, _staking, _treasury) {
+    ) NoteKeeper(_authority, _totc, _btotc, _staking, _treasury) {
         // save gas for users by bulk approving stake() transactions
         _totc.approve(address(_staking), 1e45);
     }
@@ -278,7 +280,7 @@ contract TriumphBondDepository is IBondDepository, NoteKeeper, GovernanceAggrega
         bool[2] memory _booleans,
         uint256[2] memory _terms,
         uint32[2] memory _intervals
-    ) external override onlyPolicy assetCeiling returns (uint256 id_) {
+    ) external override onlyPolicy assetCeiling isApprovedAsset returns (uint256 id_) {
         // the length of the program, in seconds
         uint256 secondsToConclusion = _terms[1] - block.timestamp;
 

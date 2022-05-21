@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 pragma solidity ^0.8.10;
 
-import "../types/TOCAccessControlled.sol";
+import "../types/TriumphAccessControlled.sol";
 import "../interfaces/IERC20.sol";
 
-abstract contract FrontEndRewarder is TOCAccessControlled {
+abstract contract FrontEndRewarder is TriumphAccessControlled {
     /* ========= STATE VARIABLES ========== */
 
     uint256 public daoReward; // % reward for dao (3 decimals: 100 = 1%)
@@ -14,7 +14,7 @@ abstract contract FrontEndRewarder is TOCAccessControlled {
 
     IERC20 internal immutable toc; // reward token
 
-    constructor(ITOCAuthority _authority, IERC20 _toc) TOCAccessControlled(_authority) {
+    constructor(ITriumphAuthority _authority, IERC20 _toc) TriumphAccessControlled(_authority) {
         toc = _toc;
     }
 

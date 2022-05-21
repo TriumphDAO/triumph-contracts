@@ -2,7 +2,7 @@
 pragma solidity ^0.8.10;
 
 import {YieldSplitter} from "../types/YieldSplitter.sol";
-import {IgTOC} from "../interfaces/IgTOC.sol";
+import {IbTOC} from "../interfaces/IbTOC.sol";
 
 /**
     @title YieldSplitterImpl
@@ -11,9 +11,9 @@ import {IgTOC} from "../interfaces/IgTOC.sol";
 contract YieldSplitterImpl is YieldSplitter {
     /**
     @notice Constructor
-    @param sOHM_ Address of sOHM.
+    @param sTOC_ Address of sTOC.
     */
-    constructor(address sOHM_) YieldSplitter(sOHM_) {}
+    constructor(address sTOC_) YieldSplitter(sTOC_) {}
 
     /**
         @notice Create a deposit.
@@ -36,7 +36,7 @@ contract YieldSplitterImpl is YieldSplitter {
     /**
         @notice Withdraw part of the principal amount deposited.
         @param id_ Id of the deposit.
-        @param amount_ Amount of gOHM to withdraw.
+        @param amount_ Amount of bTOC to withdraw.
     */
     function withdrawPrincipal(uint256 id_, uint256 amount_) external {
         _withdrawPrincipal(id_, amount_, msg.sender);
@@ -45,16 +45,16 @@ contract YieldSplitterImpl is YieldSplitter {
     /**
         @notice Withdraw all of the principal amount deposited.
         @param id_ Id of the deposit.
-        @return amountWithdrawn : amount of gOHM withdrawn. 18 decimals.
+        @return amountWithdrawn : amount of bTOC withdrawn. 18 decimals.
     */
     function withdrawAllPrincipal(uint256 id_) external returns (uint256 amountWithdrawn) {
         return _withdrawAllPrincipal(id_, msg.sender);
     }
 
     /**
-        @notice Redeem excess yield from your deposit in sOHM.
+        @notice Redeem excess yield from your deposit in sTOC.
         @param id_ Id of the deposit.
-        @return amountRedeemed : amount of yield redeemed in gOHM. 18 decimals.
+        @return amountRedeemed : amount of yield redeemed in bTOC. 18 decimals.
     */
     function redeemYield(uint256 id_) external returns (uint256) {
         uint256 amountRedeemed = _redeemYield(id_);
@@ -64,10 +64,10 @@ contract YieldSplitterImpl is YieldSplitter {
     /**
         @notice Close a deposit. Remove all information in both the deposit info, depositorIds and recipientIds.
         @param id_ Id of the deposit.
-        @dev Internally for accounting reasons principal amount is stored in 9 decimal OHM terms. 
-        Since most implementations will work will gOHM, principal here is returned externally in 18 decimal gOHM terms.
-        @return principal : amount of principal that was deleted. in gOHM. 18 decimals.
-        @return agnosticAmount : total amount of gOHM deleted. Principal + Yield. 18 decimals.
+        @dev Internally for accounting reasons principal amount is stored in 9 decimal TOC terms. 
+        Since most implementations will work will bTOC, principal here is returned externally in 18 decimal bTOC terms.
+        @return principal : amount of principal that was deleted. in bTOC. 18 decimals.
+        @return agnosticAmount : total amount of bTOC deleted. Principal + Yield. 18 decimals.
     */
     function closeDeposit(uint256 id_) external returns (uint256 principal, uint256 agnosticAmount) {
         (principal, agnosticAmount) = _closeDeposit(id_, msg.sender);
@@ -75,7 +75,7 @@ contract YieldSplitterImpl is YieldSplitter {
 
     /**
         @notice Calculate outstanding yield redeemable based on principal and agnosticAmount.
-        @return uint256 amount of yield in gOHM. 18 decimals.
+        @return uint256 amount of yield in bTOC. 18 decimals.
      */
     function getOutstandingYield(uint256 principal_, uint256 agnosticAmount_) external view returns (uint256) {
         return _getOutstandingYield(principal_, agnosticAmount_);

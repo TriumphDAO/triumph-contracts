@@ -2,16 +2,15 @@
 pragma solidity ^0.8.10;
 
 import "./types/NoteKeeper.sol";
+import "./governance/GovernanceAggregator.sol";
 
 import "./libraries/SafeERC20.sol";
 
 import "./interfaces/IERC20Metadata.sol";
 import "./interfaces/IBondDepository.sol";
 import "./interfaces/ITOCAuthority.sol";
-import "./interfaces/IgTOC.sol";
 
-
-contract TriumphBondDepository is IBondDepository, NoteKeeper {
+contract TriumphBondDepository is IBondDepository, NoteKeeper, GovernanceAggregator {
     /* ======== DEPENDENCIES ======== */
 
     using SafeERC20 for IERC20;
@@ -39,7 +38,6 @@ contract TriumphBondDepository is IBondDepository, NoteKeeper {
     constructor(
         ITOCAuthority _authority,
         IERC20 _totc,
-        IgTOC _gtotc,
         IStaking _staking,
         ITreasury _treasury
     ) NoteKeeper(_authority, _totc, _gtotc, _staking, _treasury) {
@@ -280,7 +278,7 @@ contract TriumphBondDepository is IBondDepository, NoteKeeper {
         bool[2] memory _booleans,
         uint256[2] memory _terms,
         uint32[2] memory _intervals
-    ) external override onlyPolicy returns (uint256 id_) {
+    ) external override onlyPolicy assetCeiling returns (uint256 id_) {
         // the length of the program, in seconds
         uint256 secondsToConclusion = _terms[1] - block.timestamp;
 

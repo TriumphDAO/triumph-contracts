@@ -1,6 +1,6 @@
 pragma solidity ^0.8.10;
 
-import "../interfaces/ITOCAuthority.sol";
+import "../interfaces/ITriumphAuthority.sol";
 
 error UNAUTHORIZED();
 error AUTHORITY_INITIALIZED();
@@ -9,18 +9,18 @@ error AUTHORITY_INITIALIZED();
 /// instead of pointing towards the logic to execute. Over many
 /// functions this bloats contract size unnecessarily.
 /// imho modifiers are a meme.
-abstract contract TOCAccessControlledV2 {
+abstract contract TriumphAccessControlledV2 {
     /* ========== EVENTS ========== */
 
-    event AuthorityUpdated(ITOCAuthority authority);
+    event AuthorityUpdated(ITriumphAuthority authority);
 
     /* ========== STATE VARIABLES ========== */
 
-    ITOCAuthority public authority;
+    ITriumphAuthority public authority;
 
     /* ========== Constructor ========== */
 
-    constructor(ITOCAuthority _authority) {
+    constructor(ITriumphAuthority _authority) {
         authority = _authority;
         emit AuthorityUpdated(_authority);
     }
@@ -49,13 +49,13 @@ abstract contract TOCAccessControlledV2 {
 
     /* ========== GOV ONLY ========== */
 
-    function initializeAuthority(ITOCAuthority _newAuthority) internal {
-        if (authority != ITOCAuthority(address(0))) revert AUTHORITY_INITIALIZED();
+    function initializeAuthority(ITriumphAuthority _newAuthority) internal {
+        if (authority != ITriumphAuthority(address(0))) revert AUTHORITY_INITIALIZED();
         authority = _newAuthority;
         emit AuthorityUpdated(_newAuthority);
     }
 
-    function setAuthority(ITOCAuthority _newAuthority) external {
+    function setAuthority(ITriumphAuthority _newAuthority) external {
         _onlyGovernor();
         authority = _newAuthority;
         emit AuthorityUpdated(_newAuthority);

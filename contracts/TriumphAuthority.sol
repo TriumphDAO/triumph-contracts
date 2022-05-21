@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity >=0.7.5;
 
-import "./interfaces/ITOCAuthority.sol";
+import "./interfaces/ITriumphAuthority.sol";
 
-import "./types/TOCAccessControlled.sol";
+import "./types/TriumphAccessControlled.sol";
 
-contract OlympusAuthority is ITOCAuthority, TOCAccessControlled {
+contract TriumphAuthority is ITriumphAuthority, TriumphAccessControlled {
     /* ========== STATE VARIABLES ========== */
 
     address public override governor;
@@ -31,7 +31,7 @@ contract OlympusAuthority is ITOCAuthority, TOCAccessControlled {
         address _guardian,
         address _policy,
         address _vault
-    ) TOCAccessControlled(ITOCAuthority(address(this))) {
+    ) TriumphAccessControlled(ITriumphAuthority(address(this))) {
         governor = _governor;
         emit GovernorPushed(address(0), governor, true);
         guardian = _guardian;

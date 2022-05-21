@@ -12,9 +12,9 @@ import "./interfaces/IsTOC.sol";
 import "./interfaces/IBondingCalculator.sol";
 import "./interfaces/ITreasury.sol";
 
-import "./types/TOCAccessControlled.sol";
+import "./types/TriumphAccessControlled.sol";
 
-contract TriumphTreasury is TOCAccessControlled, ITreasury {
+contract TriumphTreasury is TriumphAccessControlled, ITreasury {
     /* ========== DEPENDENCIES ========== */
 
     using SafeMath for uint256;
@@ -91,7 +91,7 @@ contract TriumphTreasury is TOCAccessControlled, ITreasury {
         address _toc,
         uint256 _timelock,
         address _authority
-    ) TOCAccessControlled(ITOCAuthority(_authority)) {
+    ) TriumphAccessControlled(ITriumphAuthority(_authority)) {
         require(_toc != address(0), "Zero address: TOC");
         TOC = ITOC(_toc);
 

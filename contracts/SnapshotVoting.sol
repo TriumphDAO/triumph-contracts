@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.10;
 
 import "usingtellor/contracts/UsingTellor.sol";
 import "./governance/BondHolderTOCERC20.sol";

@@ -4,21 +4,21 @@ pragma solidity ^0.8.10;
 interface IGovernanceAggregator {
 
     struct ApprovedAsset {
-        address token; //Token contract address
+        uint256 token; //Token contract address
         bool approved; //Token is approved (True) or removed (False)
     }
 
     struct CumulativeAssetCeiling {
-        address token; //Token contract address
-        uint96 index; //Location in index
+        uint256 token; //Token contract address
+        uint256 index; //Location in index
         uint256 ceiling; //Maximum amount of tokens allowed to be purchased in bond markets
         string assetClass; //Category of asset; Public good, common good, positive externality
     }
 
     //EVENTS
 
-    event newAssetApproved(address indexed token);
-    event assetRemoved(address indexed token);
-    event assetCeilingRaised(address token , uint256 amount , uint256 newTotal);
+    event newAssetApproved(uint256 token);
+    event assetRemoved(uint256 token);
+    event assetCeilingRaised(uint256 token , uint256 amount , uint256 newTotal);
 
 }

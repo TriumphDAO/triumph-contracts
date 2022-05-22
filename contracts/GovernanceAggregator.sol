@@ -31,10 +31,10 @@ abstract contract GovernanceAggregator is IGovernanceAggregator, TriumphAccessCo
         _;
     } 
 
-    modifier assetCeiling(uint256 _quoteToken, bool[2] storage _booleans) {
+    modifier assetCeiling(uint256 _quoteToken, uint256[3] storage _market) {
         CumulativeAssetCeiling storage cumulativeAssetCeiling = cumulativeAssetCeilings[_quoteToken];
 
-        require(cumulativeAssetCeiling.ceiling + IERC20(_quoteToken).balanceOf(treasury) >= _booleans[0], 
+        require(cumulativeAssetCeiling.ceiling + IERC20(_quoteToken).balanceOf(treasury) >= _market[0], 
         "Bond market capacity exceeds the asset ceiling for this token.");
         _;
     }
@@ -42,7 +42,7 @@ abstract contract GovernanceAggregator is IGovernanceAggregator, TriumphAccessCo
 // FUNCTIONS //
 
 //Add approved asset to list
-function approveByVote(address _token, string calldata _assetClass) public isApprovedAsset onlyPolicy {
+function approveByVote(uint256 _token, string calldata _assetClass) public isApprovedAsset onlyPolicy {
     //TODO Can Tally execute automatically?
     approvedAssets.push(
         ApprovedAsset({
@@ -62,7 +62,7 @@ function approveByVote(address _token, string calldata _assetClass) public isApp
 }
 
 //Increment the cumulative asset ceiling for a token, increasing the capacity that bond markets can use to purchase them
-function incrementAssetCeiling(address _token, uint256 _ceiling) public isApprovedAsset onlyPolicy returns(uint256 cumulativeAssetCeiling) {
+function incrementAssetCeiling(uint256 _token, uint256 _ceiling) public isApprovedAsset(_token) onlyPolicy returns(uint256 cumulativeAssetCeiling) {
     //TODO What does the data from Tellor look like?
     CumulativeAssetCeiling storage cumulativeAssetCeiling = cumulativeAssetCeilings[_token];
     uint256 currentCeiling = cumulativeAssetCeiling.ceiling;

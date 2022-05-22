@@ -3,12 +3,12 @@ pragma solidity ^0.8.10;
 
 interface IGovernanceAggregator {
 
-    struct approvedAsset {
+    struct ApprovedAsset {
         address token; //Token contract address
         bool approved; //Token is approved (True) or removed (False)
     }
 
-    struct cumulativeAssetCeiling {
+    struct CumulativeAssetCeiling {
         address token; //Token contract address
         uint96 index; //Location in index
         uint256 ceiling; //Maximum amount of tokens allowed to be purchased in bond markets

@@ -34,7 +34,7 @@ abstract contract GovernanceAggregator is IGovernanceAggregator, TriumphAccessCo
     modifier assetCeiling(uint256 _quoteToken, bool[2] storage _booleans) {
         CumulativeAssetCeiling storage cumulativeAssetCeiling = cumulativeAssetCeilings[_quoteToken];
 
-        require(cumulativeAssetCeiling.ceiling + IERC20(treasury.balanceOf(_quoteToken)) >= _booleans[0], 
+        require(cumulativeAssetCeiling.ceiling + IERC20(_quoteToken).balanceOf(treasury) >= _booleans[0], 
         "Bond market capacity exceeds the asset ceiling for this token.");
         _;
     }
